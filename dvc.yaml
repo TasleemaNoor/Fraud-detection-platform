@@ -1,0 +1,11 @@
+# Optional reproducible pipeline:  pip install dvc && dvc init --no-scm && dvc repro
+stages:
+  make_dataset:
+    cmd: python -m src.data.make_dataset
+    deps: [src/data/make_dataset.py, src/data/generator.py, src/features/store.py]
+    params: [data]
+    outs: [data/processed/transactions.parquet]
+  train:
+    cmd: python -m src.training.train --data data/processed/transactions.parquet
+    deps: [src/training/train.py, data/processed/transactions.parquet]
+    params: [training, xgboost, lightgbm]

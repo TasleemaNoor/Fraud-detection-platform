@@ -1,0 +1,36 @@
+# Single source of truth for data + training hyper-parameters (DVC-tracked).
+data:
+  n_samples: 50000        # synthetic transactions used for the base training set
+  n_cards: 2000
+  seed: 42
+  mean_interval_sec: 1.0  # simulated seconds between transactions
+
+training:
+  candidates: [logreg, xgboost, lightgbm]
+  min_pr_auc: 0.50          # quality gate: below this a model is never promoted
+  min_feedback_rows: 2000   # labelled production rows needed for a feedback retrain
+  reference_sample: 5000    # rows stored as drift-reference with each model
+  min_precision: 0.50       # decision threshold = max recall s.t. precision >= this
+  feedback_weight: 5.0      # sample weight of recent labelled production rows
+
+xgboost:
+  n_estimators: 300
+  max_depth: 5
+  learning_rate: 0.08
+  subsample: 0.8
+  colsample_bytree: 0.8
+
+lightgbm:
+  n_estimators: 300
+  num_leaves: 31
+  learning_rate: 0.05
+
+monitoring:
+  # Stateless features only: stateful ones (rolling counts) depend on feature-store warm-up and
+  # would raise false alarms on a fresh stream. Concept drift in those is caught by live recall.
+  drift_features: [amount, hour, is_foreign, merchant_category, channel, device]
+  window_rows: 1000             # most-recent scored rows compared to the reference
+  min_rows: 500
+  drift_share_threshold: 0.30   # >= 30 % of features drifted => dataset drift
+  min_recall: 0.50              # live recall floor (needs >= 15 positives in window)
+  retrain_cooldown_sec: 600

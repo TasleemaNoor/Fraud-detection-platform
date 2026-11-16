@@ -1,0 +1,19 @@
+# Runtime dependencies (pinned to the versions the project was tested with)
+mlflow==2.22.0
+SQLAlchemy>=2.0.30,<2.1        # mlflow 2.22 is incompatible with SQLAlchemy 2.1
+scikit-learn==1.9.1
+xgboost==3.4.1
+lightgbm==4.7.0
+pandas==2.3.3
+numpy==2.0.2
+pyarrow==19.0.1
+evidently==0.4.40
+fastapi==0.162.7
+uvicorn[standard]==0.54.0
+pydantic==2.14.3
+prometheus-client==0.26.0
+psycopg2-binary==2.9.13
+redis==8.1.0
+confluent-kafka==2.16.1
+requests==2.34.2
+PyYAML==6.0.3
